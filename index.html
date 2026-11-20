@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My First Upload Project</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: Arial, sans-serif; background: #f2f5fb;
+      color: #18233a; display: grid; place-items: center; min-height: 100vh;
+    }
+    .card {
+      width: min(92%, 520px); background: white; padding: 28px;
+      border-radius: 18px; box-shadow: 0 10px 30px #15264a18;
+    }
+    h1 { margin-top: 0; color: #2454d7; }
+    input { width: 100%; padding: 12px; border: 1px solid #ccd4e2; border-radius: 8px; }
+    button {
+      margin-top: 12px; padding: 11px 16px; border: 0; border-radius: 8px;
+      background: #2454d7; color: white; cursor: pointer;
+    }
+    li { margin: 12px 0; display: flex; justify-content: space-between; gap: 10px; }
+    li button { margin: 0; padding: 6px 10px; background: #d94343; }
+    .hint { color: #68748a; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>My First Upload Project</h1>
+    <p>Add a task below. Your tasks stay saved in this browser.</p>
+    <input id="taskInput" type="text" placeholder="Enter a task">
+    <button id="addButton">Add Task</button>
+    <ul id="taskList"></ul>
+    <p class="hint">Practice project: HTML, CSS and JavaScript.</p>
+  </main>
+
+  <script>
+    const input = document.getElementById("taskInput");
+    const list = document.getElementById("taskList");
+    const savedTasks = JSON.parse(localStorage.getItem("practiceTasks") || "[]");
+
+    function renderTasks() {
+      list.innerHTML = "";
+      savedTasks.forEach((task, index) => {
+        const item = document.createElement("li");
+        const label = document.createElement("span");
+        label.textContent = task;
+        const remove = document.createElement("button");
+        remove.textContent = "Delete";
+        remove.addEventListener("click", () => {
+          savedTasks.splice(index, 1);
+          saveAndRender();
+        });
+        item.append(label, remove);
+        list.appendChild(item);
+      });
+    }
+
+    function saveAndRender() {
+      localStorage.setItem("practiceTasks", JSON.stringify(savedTasks));
+      renderTasks();
+    }
+
+    document.getElementById("addButton").addEventListener("click", () => {
+      const task = input.value.trim();
+      if (!task) {
+        alert("Please enter a task first.");
+        return;
+      }
+      savedTasks.push(task);
+      input.value = "";
+      saveAndRender();
+    });
+
+    input.addEventListener("keydown", event => {
+      if (event.key === "Enter") document.getElementById("addButton").click();
+    });
+
+    renderTasks();
+  </script>
+</body>
+</html>
